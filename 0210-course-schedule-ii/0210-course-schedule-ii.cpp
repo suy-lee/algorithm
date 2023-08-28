@@ -1,34 +1,37 @@
 class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        //Initializing a 2d graph , result vector and indegree array
-        vector<vector<int>> graph(numCourses);
-        vector<int> result, indegree(numCourses);
-        
-        //Indegree
-        for(auto& prereq : prerequisites)
-            graph[prereq[1]].push_back(prereq[0]),
-            indegree[prereq[0]]++;
-        
-        //dfs call
-        function<void(int)> dfs = [&](int current) {
-            //Adding the current course into the result 
-            result.push_back(current);            
-            //Making sure that the current course that we added is marked as visited
-            indegree[current] = -1;                     
+        // BFS approach
+        vector<int>adj[numCourses];
+        queue<int>q;
+        vector<int>indegree(numCourses,0);
+        //store 
+         for(int i =0; i< prerequisites.size(); i++ ){
+            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+        //indegree u -> v
+        for(int i =0; i < prerequisites.size(); i++){
+            indegree[prerequisites[i][0]]++;
             
-            //if any next course has a indegree of 0 ie if it has no prerequisites requirement than make dfs call for that course
-            for(auto nextCourse : graph[current])          
-                if(--indegree[nextCourse] == 0)     
-                    dfs(nextCourse);                
-        };
-        
-        // If the indegree becomes 0 of a course then again add them into DFS and start DFS call from that course .
-        for(int i = 0; i < numCourses; i++)
-            if(indegree[i] == 0) dfs(i);                   
-        
-        //In the end return `result` if it contains all `numCourses` else return  []
-        if(size(result) == numCourses) return result;
-        return {};
+        }
+        //push into q,indegree having 0
+        for(int i =0; i< indegree.size(); i++){
+            if(indegree[i] == 0)q.push(i);
+        }
+        vector<int>result;
+        //Simple BFS and keep storing indegree values equal to 0 into result vector
+        while(!q.empty()){
+           int v = q.front();
+            q.pop();
+            for(auto it : adj[v]){
+                indegree[it]--;
+                 if(indegree[it] == 0)q.push(it);
+            }
+            result.emplace_back(v);
+        }
+        //check case 
+        if (result.size() != numCourses)
+        result.clear();
+        return result;
     }
 };

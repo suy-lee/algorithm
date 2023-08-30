@@ -1,51 +1,41 @@
 class Solution {
 public:
-    bool dfs(int node, vector<vector<int>> &adj, vector<bool> &visit, vector<bool> &inStack) {
-        // if the node is already in the stack, we have a cycle.
-        if (inStack[node]) {
-            return true;
+    // Topological sort, BFS, Kahn's Algorithm
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites){
+        vector<int> adj[numCourses+1];
+        queue<int> q;
+        vector<int> indegree(numCourses, 0);
+
+        // Store directed graph
+        for (int i = 0; i < prerequisites.size(); i++) {
+            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
         }
 
-        if (visit[node]) {
-            return false;
+        // Calc indegree
+        for (int i = 0; i < prerequisites.size(); i++) {
+            indegree[prerequisites[i][0]]++; 
         }
-
-        // mark the current node as visited and part of current recursion stack.
-        visit[node] = true;
-        inStack[node] = true;
-
-        for (auto neighbor : adj[node]) {
-            if (dfs(neighbor, adj, visit, inStack)) {
-                return true;
-            }
-        }
-
-        // remove the node from the stack.
-        inStack[node] = false;
-        return false;
-    }
-
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        // vector prerequisites [a, b]
-        // a = course that you want to take
-        // b = prerequisite for a
-        // cycle may be exist
         
-        vector<vector<int>> adj(numCourses);
-
-        for (auto prerequisite : prerequisites) {
-            adj[prerequisite[1]].push_back(prerequisite[0]);
+        // If indegree is 0 push that into queue
+        for (int i = 0; i < indegree.size(); i++) {
+             if (indegree[i] == 0) q.push(i);
         }
 
-        vector<bool> visit(numCourses);
-        vector<bool> inStack(numCourses);
+        int count = 0;
         
-        for (int i = 0; i < numCourses; i++) {
-            if (dfs(i, adj, visit, inStack)) {
-                return false;   // when cycle detected
-            }
+        // bfs
+        while (!q.empty()) {
+            int v = q.front(); 
+            q.pop();
+            count++;
+
+            for(auto i : adj[v]){
+                indegree[i]--;
+                if (indegree[i] == 0) q.push(i);
+            }     
         }
 
-        return true;
+        if (count == numCourses) return true;
+        else return false;
     }
 };

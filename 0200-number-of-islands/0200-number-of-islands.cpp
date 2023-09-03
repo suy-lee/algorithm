@@ -1,54 +1,56 @@
 class Solution {
 public:
     int numIslands(vector<vector<char>>& grid) {
+        int dir[4][2] = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
         int m, n;
-        int dir[4][2] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
-
+        
         m = grid.size();
-        if (!m) return 0; // termination condition
+        if (m == 0) return 0;
         n = grid[0].size();
-
-        int num_islands = 0;
+        
+        int numIslands = 0;
 
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) { // traverse all cells
+            for (int j = 0; j < n; j++) {
                 if (grid[i][j] == '1') {
-                    ++num_islands;
-                    grid[i][j] = '0'; // mark as visited
-                    queue<pair<int, int>> neighbors; // declare queue here
+                    numIslands++;
+                    grid[i][j] = '0';
+
+                    pair<int, int> cell;
+                    queue<pair<int, int>> neighbors;
                     neighbors.push({i, j});
 
                     while (!neighbors.empty()) {
-                        pair<int, int> it = neighbors.front();
+                        cell = neighbors.front();
                         neighbors.pop();
-                        int row = it.first, col = it.second;
 
-                        // see friends which are adjacent
-                        if (row - 1 >= 0 && grid[row-1][col] == '1') {
-                            // see if left friend is valid
-                            neighbors.push({row-1, col});
-                            grid[row-1][col] = '0'; // mark as visited
+                        int r = cell.first;
+                        int c = cell.second;
+
+                        if (r - 1 >= 0 && grid[r-1][c] == '1') {
+                            neighbors.push({r-1, c});
+                            grid[r-1][c] = '0';
                         }
-                        if (row + 1 <= m - 1 && grid[row+1][col] == '1') {
-                            // see if right friend is valid
-                            neighbors.push({row+1, col});
-                            grid[row+1][col] = '0'; // mark as visited
+
+                        if (r + 1 < m && grid[r+1][c] == '1') {
+                            neighbors.push({r+1, c});
+                            grid[r+1][c] = '0';
                         }
-                        if (col - 1 >= 0 && grid[row][col-1] == '1') {
-                            // see if right friend is valid
-                            neighbors.push({row, col-1});
-                            grid[row][col-1] = '0'; // mark as visited
+
+                        if (c - 1 >= 0 && grid[r][c-1] == '1') {
+                            neighbors.push({r, c-1});
+                            grid[r][c-1] = '0';
                         }
-                        if (col + 1 <= n - 1 && grid[row][col+1] == '1') {
-                            // see if right friend is valid
-                            neighbors.push({row, col+1});
-                            grid[row][col+1] = '0'; // mark as visited
+                        
+                        if (c + 1 < n && grid[r][c+1] == '1') {
+                            neighbors.push({r, c+1});
+                            grid[r][c+1] = '0';
                         }
                     }
                 }
             }
         }
 
-        return num_islands;
+        return numIslands;
     }
 };

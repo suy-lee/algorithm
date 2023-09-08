@@ -2,26 +2,22 @@ class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
         vector<vector<int>> subsets;
-        vector<int> currentSubset;
+        vector<int> current;
         sort(nums.begin(), nums.end());
-        subsetsWithDupHelper(subsets, currentSubset, nums, 0);
+        subsetsWithDupHelper(subsets, current, nums, 0);
         return subsets;
     }
-    
-private:
-    void subsetsWithDupHelper(vector<vector<int>> &subsets, vector<int> &currentSubset, vector<int> &nums, int index) {
-        // Add the subset formed so far to the subsets list.
-        subsets.push_back(currentSubset);
 
+private:
+    void subsetsWithDupHelper(vector<vector<int>> &subsets, vector<int> &current, vector<int> &nums, int index) {
+        subsets.push_back(current);
+        
         for (int i = index; i < nums.size(); i++) {
-            // If the current element is a duplicate, ignore.
-            if (i != index && nums[i] == nums[i-1]) {   // since array is sorted, duplicate number should be place adjacent
-                continue;
-            }
+            if (i != index && nums[i] == nums[i-1]) continue; // get rid of duplicate
             
-            currentSubset.push_back(nums[i]);
-            subsetsWithDupHelper(subsets, currentSubset, nums, i+1);
-            currentSubset.pop_back();
+            current.push_back(nums[i]);
+            subsetsWithDupHelper(subsets, current, nums, i+1);
+            current.pop_back();
         }
     }
 };

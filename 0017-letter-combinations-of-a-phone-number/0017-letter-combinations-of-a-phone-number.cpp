@@ -1,26 +1,28 @@
 class Solution {
 private:
-    void letterCombinations(string digits, vector<string>& output, string &temp, vector<string>& pad, int index){
-        if(index == digits.size()){
-            output.push_back(temp);
+    void backtrack(string digits, vector<string> &ans, string &curr, vector<string> &pad, int index) {
+        if (index == digits.size()) {
+            ans.push_back(curr);
             return;
         }
-        string value = pad[digits[index]-'0'];
-        for(int i=0; i<value.size(); i++){
-            temp.push_back(value[i]);
-            letterCombinations(digits, output, temp, pad, index+1);
-            temp.pop_back();
+        
+        string value = pad[digits[index]-'0'];  // number of character size
+        
+        for (int i = 0; i < value.size(); i++) {
+            curr.push_back(value[i]);
+            backtrack(digits, ans, curr, pad, index+1);
+            curr.pop_back();
         }
     }
+    
 public:
     vector<string> letterCombinations(string digits) {
-        if(digits.empty()){
-            return {};
-        }
+        if (digits.empty()) return {};
+        
         vector<string> pad = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-        vector<string> output;
-        string temp;
-        letterCombinations(digits, output, temp, pad, 0);
-        return output;
+        vector<string> ans;
+        string curr;
+        backtrack(digits, ans, curr, pad, 0);
+        return ans;
     }
 };

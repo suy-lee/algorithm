@@ -6,10 +6,12 @@ public:
         dp[0] = 0;
         
         for (int currAmount = 1; currAmount <= amount; currAmount++) {
-            for (auto &coin: coins)
-                if (coin <= currAmount)
-                    dp[currAmount] = min(dp[currAmount], 1 + dp[currAmount-coin]);
+            for (int j = 0; j < n; j++) { // traverse all coins
+                if (coins[j] <= currAmount)
+                    dp[currAmount] = min(dp[currAmount], 1 + dp[currAmount-coins[j]]);
+            }
         }
+        
         return dp[amount] > amount ? -1 : dp[amount];
     }
 };

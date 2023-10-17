@@ -1,16 +1,16 @@
 class Solution {
 public:
-    int houseRobber(vector<int> &nums) {
-        int dp[nums.size()+1];
+    int helper(vector<int> &nums) {
+        int dp[nums.size() + 1];
         
         dp[0] = nums[0];
         dp[1] = max(nums[0], nums[1]);
         for (int i = 2; i < nums.size(); i++) {
-            dp[i] = max(dp[i-2]+nums[i], dp[i-1]);
+            dp[i] = max(dp[i-1], dp[i-2] + nums[i]);
         }
-        return dp[nums.size()-1];
+        
+        return dp[nums.size() - 1];
     }
-    
     int rob(vector<int>& nums) {
         int n = nums.size();
         if (n == 0) return 0;
@@ -19,6 +19,6 @@ public:
         
         vector<int> v1(nums.begin(), nums.end()-1);
         vector<int> v2(nums.begin()+1, nums.end());
-        return max(houseRobber(v1), houseRobber(v2));
+        return max(helper(v1), helper(v2));
     }
 };
